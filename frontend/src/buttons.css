@@ -97,7 +97,54 @@ body {
 }
 
 @keyframes glowing {
-    0% { background-position: 0 0; }
-    50% { background-position: 400% 0; }
-    100% { background-position: 0 0; }
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+@keyframes slideBounce {
+    0% {
+        transform: translateY(-100%);
+    }
+    70% {
+        transform: translateY(10%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.alert {
+    /* Other styles... */
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.alert.visible {
+    animation: slideBounce 0.8s ease;
+    opacity: 1;
+}
+
+.alert.fade {
+    animation: fadeOut 3.5s ease forwards;
 }
