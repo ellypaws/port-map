@@ -2,15 +2,25 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os/exec"
+	"sync"
 )
 
-// App struct
 type App struct {
-	ctx context.Context
+	mu             sync.Mutex
+	tcpConnections []TcpConnection
+	ctx            context.Context
 }
 
-// NewApp creates a new App application struct
+type TcpConnection struct {
+	LocalAddress  string `json:"LocalAddress"`
+	LocalPort     int    `json:"LocalPort"`
+	OwningProcess int    `json:"OwningProcess"`
+	Process       string `json:"Process"`
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -21,13 +31,44 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
-
-func (a *App) SayGoodbye(name string) string {
-	return fmt.Sprintf("Goodbye %s, It's show time!", name)
-}
-
 func (a *App) shutdown(ctx context.Context) {}
+
+func (a *App) GetTcpConnections() string {
+	cmdTxt := `Get-NetTcpConnection -State Listen | ` +
+		`Select-Object LocalAddress,LocalPort,OwningProcess,@{` +
+		`Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}} | ` +
+		`Sort-Object -Property LocalPort | ConvertTo-Json`
+
+	// Execute the PowerShell command
+	cmd := exec.Command("powershell", "-command", cmdTxt)
+	output, err := cmd.CombinedOutput()
+
+	// Error handling
+	if err != nil {
+		panic(err)
+	}
+
+	// Update the connections to the latest
+	a.mu.Lock()
+	err = json.Unmarshal(output, &a.tcpConnections)
+	a.mu.Unlock()
+	if err != nil {
+		panic(err)
+	}
+
+	// return the connections in json string format
+	return string(output)
+}
+
+func (a *App) TerminateProcess(index int) {
+	if index >= 0 && index < len(a.tcpConnections) {
+		cmd := exec.Command("taskkill", "/F", "/PID", fmt.Sprintf("%d", a.tcpConnections[index].OwningProcess))
+		err := cmd.Run()
+		if err != nil {
+			panic(err)
+		}
+
+		msg := fmt.Sprintf("Terminated process %d (%s)\n", a.tcpConnections[index].OwningProcess, a.tcpConnections[index].Process)
+		fmt.Println(msg)
+	}
+}

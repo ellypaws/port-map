@@ -80,25 +80,55 @@ fabric.properties
 # vendor/
 # Go workspace file
 go.work
-### Go.AllowList template
-# Allowlisting gitignore template for GO projects prevents us
-# from adding various unwanted local files, such as generated
-# files, developer configurations or IDE-specific files etc.
-# Recommended: Go.AllowList.gitignore
-# Ignore everything
-*
-# But not these files...
-!/.gitignore
-!*.go
-!go.sum
-!go.mod
-!README.md
-!LICENSE
-# !Makefile
-# ...even if they are in subdirectories
-!*/
+
+.idea
 
 ### Wails
 build/bin
 node_modules
 frontend/dist
+
+examples/**/example*
+!examples/**/*.*
+cmd/wails/wails
+.DS_Store
+tmp
+node_modules/
+package.json.md5
+v2/test/**/frontend/dist
+v2/test/**/build/
+v2/test/frameless/icon.png
+v2/test/hidden/icon.png
+v2/test/kitchensink/frontend/public/bundle.*
+v2/pkg/parser/testproject/frontend/wails
+v2/test/kitchensink/frontend/public
+v2/test/kitchensink/build/darwin/desktop/kitchensink
+v2/test/kitchensink/frontend/package.json.md5
+.idea/
+v2/cmd/wails/internal/commands/initialise/templates/testtemplates/
+.env
+/website/static/img/.cache.json
+
+/v3/.task
+/v3/examples/build/bin/testapp
+/websitev3/site/
+/v3/examples/plugins/bin/testapp
+
+# Temporary called mkdocs, should be renamed to more standard -website or similar
+/mkdocs-website/site
+
+### React
+
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
