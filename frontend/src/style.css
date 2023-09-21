@@ -1,3 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --g1: rgb(98, 0, 234);
+    --g2: rgb(236, 64, 122);
+    --gradient-bg: linear-gradient(120deg, var(--g1), var(--g2));
+}
+
+body {
+    background-image: var(--gradient-bg);
+    /* rest of the styles */
+}
+
+#fancy-button:before {
+    background: var(--gradient-bg);
+    /* rest of the styles */
+}
+
+#fancy-button:after {
+    background: var(--gradient-bg);
+    /* rest of the styles */
+}
+
 html {
     background-color: rgba(27, 38, 54, 1);
     text-align: center;
@@ -5,6 +30,8 @@ html {
 }
 
 body {
+    background-image: linear-gradient(to bottom, #a548da 0%, #9756de 100%);
+    -webkit-background-clip: text;
     margin: 0;
     color: white;
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
@@ -23,4 +50,56 @@ body {
 #app {
     height: 100vh;
     text-align: center;
+}
+
+#fancy-button {
+    display: inline-block;
+    color: white;
+    padding: 10px 20px;
+    position: relative;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    background: transparent;
+    z-index: 1;
+    border-radius: 50px;
+    overflow: hidden;
+    transition: color 0.2s ease;
+}
+
+#fancy-button:before, #fancy-button:after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    border-radius: inherit;
+    transition: transform .5s ease;
+    z-index: -1;
+}
+
+#fancy-button:before {
+    background-image: var(--gradient-bg);
+    transform: scale(0);
+}
+
+#fancy-button:after {
+    background-image: var(--gradient-bg);
+    background-clip: padding-box;
+    border: solid 2px transparent;
+}
+
+#fancy-button:hover:before {
+    transform: scale(1);
+}
+
+#fancy-button:hover {
+    color: #000;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
 }

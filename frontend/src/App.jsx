@@ -26,12 +26,12 @@ function App() {
 
     return (
         <div className="App">
-            <button onClick={getTcpConnections}>Get TCP Connections</button>
+            <button id="fancy-button" onClick={getTcpConnections}>Get TCP Connections</button>
             <ul>
                 {connections.map((conn, index) => (
                     <li key={index}>
                         <span>{`Local Address: ${conn.LocalAddress}, Local Port: ${conn.LocalPort}, Process: ${conn.Process}`}</span>
-                        <button onClick={() => terminateProcess(index)}>Terminate</button>
+                        <button id="fancy-button" onClick={() => terminateProcess(index)}>Terminate</button>
                     </li>
                 ))}
             </ul>
