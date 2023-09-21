@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import './buttons.css';
+import './glow.js';
+import './glow.css';
 import {GetTcpConnections, TerminateProcess} from "../wailsjs/go/main/App";
 
 // import './buttons.scss';
@@ -51,7 +53,9 @@ function App() {
     return (
         <div className="App">
 
-
+            <div id="blob" className="bg-clip-text"></div>
+            <div className="z-10">
+                {/*<div id="blur" className=""></div>*/}
             {showSuccess && (
                 <div
                     className={`alert alert-success ${showSuccess === true ? 'visible' : showSuccess === 'fade' ? 'fade' : ''}`}>
@@ -133,7 +137,8 @@ function App() {
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                                     </div>
                                     <div className="stat-title align-middle">Running process</div>
-                                    <div className="stat-value text-secondary">{conn.Process}</div>
+                                    <div
+                                        className="stat-value text-secondary text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">{conn.Process}</div>
                                     <progress
                                         className={`progress w-55 ${loadingStates[index] ? '' : 'hidden'}`}></progress>
                                 </div>
@@ -153,8 +158,7 @@ function App() {
                         </div>
                 ))}
             </div>
-
-
+        </div>
     );
 }
 
