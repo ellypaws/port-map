@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"strings"
 	"sync"
 )
 
@@ -52,6 +53,14 @@ func (a *App) GetTcpConnections() string {
 	a.mu.Lock()
 	err = json.Unmarshal(output, &a.tcpConnections)
 	a.mu.Unlock()
+
+	// surround ipv6 addresses with brackets. if string contains a colon, it's ipv6. Use strings.Contains()
+	for i := range a.tcpConnections {
+		if strings.Contains(a.tcpConnections[i].LocalAddress, ":") {
+			a.tcpConnections[i].LocalAddress = "[" + a.tcpConnections[i].LocalAddress + "]"
+		}
+	}
+
 	if err != nil {
 		panic(err)
 	}

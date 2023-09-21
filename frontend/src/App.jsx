@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
+// import './buttons.scss';
+import './buttons.css';
+import logo from "./assets/images/logo-universal.png";
+// import './buttons.js';
 import {GetTcpConnections, TerminateProcess} from "../wailsjs/go/main/App";
 
 function App() {
@@ -26,15 +30,27 @@ function App() {
 
     return (
         <div className="App">
-            <button id="fancy-button" onClick={getTcpConnections}>Get TCP Connections</button>
-            <ul>
+            {/*<img id={logo} className={logo} src={logo}></img>*/}
+            <button
+                onClick={getTcpConnections}
+                className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+            >
+                Ping
+            </button>
+            <div className="container">
                 {connections.map((conn, index) => (
-                    <li key={index}>
-                        <span>{`Local Address: ${conn.LocalAddress}, Local Port: ${conn.LocalPort}, Process: ${conn.Process}`}</span>
-                        <button id="fancy-button" onClick={() => terminateProcess(index)}>Terminate</button>
-                    </li>
+                        <div className="item" key={index}>
+                            <div className="left">
+                                <span className="interface">{`${conn.LocalAddress}:${conn.LocalPort}`}</span>
+                                <span className="process">{conn.Process}</span>
+                            </div>
+                                <button className="glow-on-hover" onClick={() => terminateProcess(index)}>
+                                    Terminate
+                                </button>
+                        </div>
                 ))}
-            </ul>
+            </div>
+
         </div>
     );
 }

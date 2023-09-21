@@ -103,3 +103,21 @@ body {
         background-position: 100% 100%;
     }
 }
+
+@keyframes gradient {
+    0% {background-position: 0% 50%}
+    50% {background-position: 100% 50%}
+    100% {background-position: 0% 50%}
+}
+
+.gradient-border {
+    --g1: rgb(98, 0, 234);
+    --g2: rgb(236, 64, 122);
+    background: linear-gradient(270deg, var(--g1), var(--g2));
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    color: #fff;
+    border: solid 2px transparent;
+    background-clip: padding-box, border-box;
+    box-decoration-break: clone;
+}
