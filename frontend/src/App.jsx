@@ -3,9 +3,90 @@ import './App.css';
 import './buttons.css';
 import './glow.js';
 import './glow.css';
-import {GetTcpConnections, TerminateProcess} from "../wailsjs/go/main/App";
+import {GetTcpConnections} from "../wailsjs/go/main/App";
 
 // import './buttons.scss';
+
+
+function Item({conn, index, afterTerminate}) {
+    const [loading, setLoading] = useState(false);
+
+    const terminateProcess = async () => {
+        setLoading(true);
+        try {
+            // await TerminateProcess(index);
+            afterTerminate && await afterTerminate();
+        } catch (err) {
+            console.error("Error terminating process:", err);
+        }
+        setLoading(false);
+    }
+
+    return <div className="item">
+        {/*<div className="left">*/}
+        {/*    <span className="interface">{`${conn.LocalAddress}:${conn.LocalPort}`}</span>*/}
+        {/*    <span className="process">{conn.Process}</span>*/}
+        {/*</div>*/}
+        {/*    <button className="glow-on-hover" onClick={() => terminateProcess(index)}>*/}
+        {/*        Terminate*/}
+        {/*    </button>*/}
+
+        <div className="stats shadow w-full flex">
+
+            <div
+                className="stat w-3/12 overflow-clip hover:overflow-visible space-x-4 delay-150 transition-all duration-300 hover:-translate-x-5">
+                <div className="stat-figure text-primary bg">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         className="inline-block w-8 h-8 stroke-current">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <div className="stat-title justify-self-start">Address</div>
+                <span
+                    className="stat-value
+                    text-primary
+                    justify-self-start
+                    hover:bg-clip-text
+                    hover:text-transparent
+                    hover:bg-gradient-to-r
+                    hover:from-purple-400
+                    hover:duration-300"
+                >{conn.LocalAddress}</span>
+                <div
+                    className="stat-desc justify-self-start">{`Running on port ${conn.LocalPort}`}</div>
+            </div>
+
+            <div className="stat w-6/12 overflow-clip space-x-4">
+                <div className="stat-figure text-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         className="inline-block w-8 h-8 stroke-current">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div className="stat-title align-middle">Running process</div>
+                <div
+                    className="stat-value text-secondary text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">{conn.Process}</div>
+                <progress
+                    className={`progress w-55 ${loading ? "" : "hidden"}`}></progress>
+            </div>
+
+            <div className="stat w-3/12 overflow-clip">
+                <div className="stat-title">Terminate</div>
+                <div className="text-secondary">
+                    <button className={`glow-on-hover align-middle content-center`}
+                            onClick={terminateProcess}>
+                        ❌
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>;
+}
+
 
 function App() {
     const [connections, setConnections] = useState([]);
@@ -42,7 +123,7 @@ function App() {
     const terminateProcess = async (index) => {
         setLoadingStates(prev => prev.map((state, idx) => idx === index ? true : state));
         try {
-            await TerminateProcess(index);
+            // await TerminateProcess(index);
             await getTcpConnections(); // refresh the list
         } catch (err) {
             console.error("Error terminating process:", err);
@@ -109,53 +190,7 @@ function App() {
             </button>
 
                 {connections.map((conn, index) => (
-                        <div className="item" key={index}>
-                            {/*<div className="left">*/}
-                            {/*    <span className="interface">{`${conn.LocalAddress}:${conn.LocalPort}`}</span>*/}
-                            {/*    <span className="process">{conn.Process}</span>*/}
-                            {/*</div>*/}
-                            {/*    <button className="glow-on-hover" onClick={() => terminateProcess(index)}>*/}
-                            {/*        Terminate*/}
-                            {/*    </button>*/}
-
-                            <div className="stats shadow w-full flex">
-
-                                <div
-                                    className="stat w-3/12 overflow-clip hover:overflow-visible space-x-4 delay-150 transition-all duration-300 hover:-translate-x-5">
-                                    <div className="stat-figure text-primary bg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                                    </div>
-                                    <div className="stat-title justify-self-start">Address</div>
-                                    <div
-                                        className="stat-value text-primary justify-self-start">{conn.LocalAddress}</div>
-                                    <div
-                                        className="stat-desc justify-self-start">{`Running on port ${conn.LocalPort}`}</div>
-                                </div>
-
-                                <div className="stat w-6/12 overflow-clip space-x-4">
-                                    <div className="stat-figure text-secondary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                                    </div>
-                                    <div className="stat-title align-middle">Running process</div>
-                                    <div
-                                        className="stat-value text-secondary text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">{conn.Process}</div>
-                                    <progress
-                                        className={`progress w-55 ${loadingStates[index] ? '' : 'hidden'}`}></progress>
-                                </div>
-
-                                <div className="stat w-3/12 overflow-clip">
-                                    <div className="stat-title">Terminate</div>
-                                    <div className="text-secondary">
-                                        <button className={`glow-on-hover align-middle content-center`}
-                                                onClick={() => terminateProcess(index)}>
-                                            ❌
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
+                    <Item key={index} conn={conn} afterTerminate={() => getTcpConnections()} index={index}/>
                 ))}
             </div>
         </div>
